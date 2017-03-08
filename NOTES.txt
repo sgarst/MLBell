@@ -1,0 +1,46 @@
+Let specific user run aplay to play WAV files:
+sudo gpasswd -a [username] audio
+
+Set up VI to respect arrow keys
+vi .vimrc
+set nocompatible
+
+Force pigpiod (daemon) to run on reboot, by adding to crontab:
+sudo crontab -e
+@reboot 	/usr/local/bin/pigpiod
+
+
+
+arp -a (to get a list of all IP addresses on network).
+ssh pi@[ipaddress] pswd: 2433p1n3
+ssh mlb@[ipaddress] pswd: mlbell
+
+ifconfig:
+sudo ifup wlan0
+
+To set up wirless follow this:
+http://www.raspberrypi.org/documentation/configuration/wireless/
+
+/etc/network/interfaces
+ADDED:
+   iface wlan0 inet dhcp
+   wpa-ssid <your network ssid here>
+   wpa-psk <your network password>
+REMOVED:
+   some lines about auto connecting... see interfaces.orig
+
+TO copy files around:
+Copy info.txt FROM rasberry to local
+scp mlb@10.0.0.13:/home/mlb/info.txt .
+
+Copy info.txt FROM local to rasbery
+scp info.txt mlb@10.0.0.13:/home/mlb/info.txt
+
+Copy directory "foo" from local to remote "bar":
+scp -r foo mlb@10.0.0.13:/home/mlb/bar
+
+MAC Address: b8:27:eb:15:c5:a3 
+
+start X Window session via SSH (much less tasking for rasberry):
+ssh -X mlb@192.168.1.47
+xeyes (to test)

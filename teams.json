@@ -1,0 +1,122 @@
+[
+  {
+    "Team":"Arizona Diamondbacks",
+    "Code":" ARI"
+  },
+  {
+    "Team":"Atlanta Braves",
+    "Code":" ATL"
+  },
+  {
+    "Team":"Baltimore Orioles",
+    "Code":" BAL"
+  },
+  {
+    "Team":"Boston Red Sox",
+    "Code":" BOS"
+  },
+  {
+    "Team":"Chicago Cubs",
+    "Code":" CHC"
+  },
+  {
+    "Team":"Chicago White Sox",
+    "Code":" CHW"
+  },
+  {
+    "Team":"Cincinnati Reds",
+    "Code":" CIN"
+  },
+  {
+    "Team":"Cleveland Indians",
+    "Code":" CLE"
+  },
+  {
+    "Team":"Colorado Rockies",
+    "Code":" COL"
+  },
+  {
+    "Team":"Detroit Tigers",
+    "Code":" DET"
+  },
+  {
+    "Team":"Florida Marlins",
+    "Code":" FLA"
+  },
+  {
+    "Team":"Houston Astros",
+    "Code":" HOU"
+  },
+  {
+    "Team":"Kansas City Royals",
+    "Code":" KAN"
+  },
+  {
+    "Team":"Los Angeles Angels of Anaheim",
+    "Code":" LAA"
+  },
+  {
+    "Team":"Los Angeles Dodgers",
+    "Code":" LAD"
+  },
+  {
+    "Team":"Milwaukee Brewers",
+    "Code":" MIL"
+  },
+  {
+    "Team":"Minnesota Twins",
+    "Code":" MIN"
+  },
+  {
+    "Team":"New York Mets",
+    "Code":" NYM"
+  },
+  {
+    "Team":"New York Yankees",
+    "Code":" NYY"
+  },
+  {
+    "Team":"Oakland Athletics",
+    "Code":" OAK"
+  },
+  {
+    "Team":"Philadelphia Phillies",
+    "Code":" PHI"
+  },
+  {
+    "Team":"Pittsburgh Pirates",
+    "Code":" PIT"
+  },
+  {
+    "Team":"San Diego Padres",
+    "Code":" SD"
+  },
+  {
+    "Team":"San Francisco Giants",
+    "Code":" SF"
+  },
+  {
+    "Team":"Seattle Mariners",
+    "Code":" SEA"
+  },
+  {
+    "Team":"St. Louis Cardinals",
+    "Code":" STL"
+  },
+  {
+    "Team":"Tampa Bay Rays",
+    "Code":" TB"
+  },
+  {
+    "Team":"Texas Rangers",
+    "Code":" TEX"
+  },
+  {
+    "Team":"Toronto Blue Jays",
+    "Code":" TOR"
+  },
+  {
+    "Team":"Washington Nationals",
+    "Code":" WAS"
+  }
+]

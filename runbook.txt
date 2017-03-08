@@ -1,0 +1,19 @@
+RUNBOOK MLBell 2/2/17 SG
+To run server component:
+- Log into samgarst.com
+- cd samgarst.com/mlbell
+- ./mlbell.py?TEAM=PHI&DATE=170131 &
+=OR=
+- nohup ./mlbell.py > ./mlbell.log 2>&1 & #Keep alive, logout.
+
+To kill server:
+- ps -e
+- kill -9 PID
+
+To test server:
+- open browswer
+- http://samgarst.com:5000/api/v1.0/getgames?team=PHI&date=2017-04-21
+
+SERVER:
+mlbell.sh - shell script to start mlbell.py if not running, exit if it is running. Called from CRONTAB, to start/check every 20 minutes
+# */20 * * * * 	/home/sgarst/samgarst.com/mlbell/mlbell.sh >> /home/sgarst/samgarst.com/mlbell/cron.log 2>&1

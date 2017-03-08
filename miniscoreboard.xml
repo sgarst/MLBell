@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--Copyright 2014 MLB Advanced Media, L.P. Use of any content on this page acknowledges agreement to the terms posted here
+http://gdx.mlb.com/components/copyright.txt-->
+<game id="2014/03/16/pitmlb-phimlb-1" home_name_abbrev="PHI" away_name_abbrev="PIT" home_code="phi" away_code="pit" home_file_code="phi" away_file_code="pit" home_team_id="143" away_team_id="134" home_games_back="" away_games_back="" home_games_back_wildcard="" away_games_back_wildcard="" venue_w_chan_loc="USFL0084" gameday_sw="Y" double_header_sw="N" gameday="2014_03_16_pitmlb_phimlb_1" home_win="5" home_loss="12" away_win="10" away_loss="7">
+	<game_status status="Final" status_ind="F" delay_reason="" inning="9" top_inning="N" b="0" s="0" o="3" inning_state=""/>
+	<linescore>
+		<inning away="0" home="0"/>
+		<inning away="1" home="0"/>
+		<inning away="1" home="0"/>
+		<inning away="0" home="0"/>
+		<inning away="2" home="0"/>
+		<inning away="0" home="0"/>
+		<inning away="1" home="0"/>
+		<inning away="0" home="0"/>
+		<inning away="0" home="0"/>
+		<r away="5" home="1" diff="5"/>
+		<h away="9" home="6"/>
+		<e away="0" home="0"/>
+		<hr away="1" home="1"/>
+		<sb away="1" home="1"/>
+		<so away="4" home="7"/>
+	</linescore>
+	<post_game venue="Bright House Field" date="March 16, 2014">
+		<winning_pitcher id="573244" ip="3.0" er="0" era="0.90" wins="1" losses="0" number="71" last="Wilk" first="Adam" name_display_roster="Wilk"/>
+		<losing_pitcher id="457711" ip="4.0" er="2" era="6.17" wins="1" losses="2" number="61" last="O'Sullivan" first="Sean" name_display_roster="O'Sullivan"/>
+		<home_team wins="5" losses="12"/>
+		<away_team wins="10" losses="7"/>
+	</post_game>
+	<home_runs>
+		<player id="435522" team_code="pit" hr="1" std_hr="1" inning="7" runners="0" number="18" last="Walker" first="Neil" name_display_roster="Walker"/>
+		<player id="999999" team_code="phi" hr="1" std_hr="1" inning="8" runners="0" number="99" last="Ross" first="Brian" name_display_roster="Ross"/>
+	</home_runs>
+</game>

@@ -1,0 +1,17 @@
+MLBell Design
+Server: Ruby
+- Cron to pull down, parse and save upcoming game data (time, date, url)
+- Incrementally poll game data (check hourly until < 1 hour, then....)
+- When game on, save stats
+- Respond to polls from MLBell, with game stats or time_till_games
+- DBASE:
+-- store game (gamestring, date, time, status, hometeam, awayteam, URL)
+-- store game_score (gamestring, date, time, status, homescore, awayscore) 
+
+MLBell: Arduino
+- Poll Server to get next three games
+- Incrementally poll game data from server (check hourly until < 1 hour...)
+- When game on, poll for score
+- DBASE:
+-- store upcoming games (gamestring, date, time, status)
+-- store gamescore (gamestring, date, time, status, homescore, awayscore, homehomeruns, awayhomeruns)

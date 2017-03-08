@@ -1,0 +1,11 @@
+# .gitignore - files to ignore
+*.gz
+.DS_Store
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip

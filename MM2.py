@@ -46,7 +46,7 @@ def main(argv):
 def parse_game(url, team): #Parse miniscoreboard.xml
     try:
         req = requests.get(url, timeout=10)
-    except req.RequestException as e:
+    except requests.exceptions.RequestException as e:
         print 'parse_game request error: ', e
     else:
 #        print 'parge_game request success: ', req.status_code
@@ -75,7 +75,7 @@ def parse_game(url, team): #Parse miniscoreboard.xml
 def update_game(g): #update game in progress
     try:
         req = requests.get(g.gameuri, timeout=10)
-    except req.RequestException as e:
+    except requests.exceptions.RequestException as e:        
             print 'update_game request error: ', e
     else:
         root = ET.fromstring(req.text)
@@ -97,7 +97,7 @@ def get_game(team, datestr = time.strftime("year_%Y/month_%m/day_%d/") ):
     games = []
     try:
         req = requests.get(url, timeout=10)
-    except req.RequestException as e:
+    except requests.exceptions.RequestException as e:
         print 'get_game request error: ', e
     else:
         root = ET.fromstring(req.text)

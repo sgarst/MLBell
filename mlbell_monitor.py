@@ -2,8 +2,8 @@
 # mlb_monitor.py - application to monitor a current game.
 
 import sys, getopt, time
-import pigpio
-from bell import bell
+#import pigpio
+#from bell import bell
 import requests
 import xml.etree.cElementTree as ET
 
@@ -72,7 +72,7 @@ def parse_game(url, team): #Parse miniscoreboard.xml
 def update_game(g): #update game in progress
     try:
         req = requests.get(g.gameuri, timeout=10)
-    	except requests.exceptions.RequestException as e:  
+    except requests.exceptions.RequestException as e:  
         print 'update_game requests error', e
         sys.exit(1)
     else:
@@ -131,7 +131,7 @@ if __name__ == "__main__":
                 if not(score == [g.homeR, g.homeHR, g.awayR, g.awayHR]):
                     # IF A HOMERUN, RING BELL!!!
                     if ((not(g.homeHR == score[1]) and (t == g.home)) or (not(g.awayHR == score[3]) and (t == g.away))):
-                        bell()
+#                        bell()
                         print "\tBELL BELL BELL\n"
             	score = [g.homeR, g.homeHR, g.awayR, g.awayHR]
                 time.sleep(15)

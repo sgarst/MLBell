@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # mlb_monitor.py - application to monitor a current game.
 
-import sys, getopt, time
+import sys, getopt, time, datetime
 #import pigpio
 #from bell import bell
 import requests
@@ -22,13 +22,13 @@ class Game:
         self.awayHR = 0 # Homeruns for away team
 
 def main(argv):
-   team = ''
+   team = 'PHI'
+   datestr=datetime.date.today().strftime('%Y-%m-%d')
    gameuri = ''
-   datestr=''
    try:
       opts, args = getopt.getopt(argv,"ht:g:d:",["team=","gamepath=","date="])
    except getopt.GetoptError:
-      print 'mlbell.py -t <team> -g <gamepath> -d <date>'
+      print 'mlbell_monitor.py -t <team> -g <gamepath> -d <date>'
       sys.exit(2)
    for opt, arg in opts:
       if opt in ('-h','--help'):
@@ -39,7 +39,11 @@ def main(argv):
       elif opt in ("-g", "--gamepath"):
          gameuri = "http://gd2.mlb.com/components/game/mlb/" + arg   
       elif opt in ("-d", "--date"):
-          datestr = datetime.date.today().strftime('%Y-%m-%d')
+          datestr = arg
+          # Validate date string?
+          #REGEX for date format YYYY-MM-DD: ^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$
+          # if re.match("^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$", datestr): ....
+          
    return team, gameuri
 
 def parse_game(url, team): #Parse miniscoreboard.xml

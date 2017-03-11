@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # mlbell_schedule.py - determine if there are any games today, and if so set up monitoring.
 
-import sys, getopt, time
-import shutil
+import sys, getopt, time, datetime
 from crontab import CronTab 
 import requests
 import xml.etree.cElementTree as ET
@@ -22,9 +21,9 @@ class Game:
         self.awayHR = 0 # Homeruns for away team
 
 def main(argv):
-   team = ''
-   gameuri = ''
-   datestr=''
+# Set defaults...
+   team = 'PHI'
+   datestr=datetime.date.today().strftime('%Y-%m-%d')
    try:
       opts, args = getopt.getopt(argv,"ht:d:",["team=","date="])
    except getopt.GetoptError:
@@ -37,8 +36,10 @@ def main(argv):
       elif opt in ("-t", "--team"):
          team = arg.upper()
       elif opt in ("-d", "--date"):
-          datestr = datetime.date.today().strftime('%Y-%m-%d')
-   return team
+          datestr = arg
+          # REGEX for date format YYYY-MM-DD: ^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$
+          # if re.match("^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$", datestr):
+   return team, datestr
 
 def parse_game(url, team): #Parse miniscoreboard.xml
     try:
@@ -48,9 +49,6 @@ def parse_game(url, team): #Parse miniscoreboard.xml
     else:
         root = ET.fromstring(req.text)
 
-    #### LOCAL FILE TEST ####
-    # root = ET.parse(open("miniscoreboard.xml", "r"))
-    
     status = root.find('game_status[@status]').get('status')
     date = root.get('id')[0:9]
     runs = root.find('linescore/r')
@@ -69,6 +67,7 @@ def parse_game(url, team): #Parse miniscoreboard.xml
 
 def get_game(team, datestr = time.strftime("year_%Y/month_%m/day_%d/") ):
 # Build a list of all games that "team" is playing "datestr" (or today, if datestr not passed in)
+
     url = "http://gd2.mlb.com/components/game/mlb/" + datestr + "epg.xml"
     games = []
     try:
@@ -78,10 +77,6 @@ def get_game(team, datestr = time.strftime("year_%Y/month_%m/day_%d/") ):
     else:
         root = ET.fromstring(req.text)
         
-    #### LOCAL FILE TEST ####
-    #root = /.parse(open("epg2.xml", "r"))
-    #### END LOCAL FILE TEST ####
-    
     #Now, parse epg.xml, looking for any games with "Team"
     for g in (root.findall('game/[@home_name_abbrev="{}"]'.format(team)) + root.findall('game/[@away_name_abbrev="{}"]'.format(team))):
         gdate = g.get('time_date') + ' ' + g.get('ampm') + ' (' + g.get('time_zone') + ')' 
@@ -91,33 +86,32 @@ def get_game(team, datestr = time.strftime("year_%Y/month_%m/day_%d/") ):
 
 ### MAIN ###      
 if __name__ == "__main__": 
-    t = main(sys.argv[1:])
-    games = get_game(t)
-
-# Create new crontab temp file, open to write
-    # shutil.copy ("cron_template.txt", "crontab.tmp")
-    # CRONTMP  = open("crontab.tmp", "a")
+    t,d = main(sys.argv[1:])
+    print "Team: ", t, ", Date: ", d
+    #convert date to proper format
+    datestr = 'year_{}/month_{}/day_{}/'.format(d[0:4], d[5:7],d[8:10])
+    games = get_game(t,datestr)
 
 # SETUP crontab
     cron = CronTab(user=True)    
-    print '%d %s game(s) today.'  %(len(games), t)  
+    print '%d %s game(s) on %s'  %(len(games), t, d)  
     for game in games: 
         print '\t%s vs %s at %s (%s).'  %(game.home, game.away, game.date, game.status)
-# IF STATUS = IN PROGRESS, THEN FORK MONITOR, 
-# ELSE IF STATUS <> IN PROGRESS, APPEND GAME TO NEW CRONTAB FILE
-        if (game.status == "In Progress"): 
-            print "Monitor game that is in progress!"
+# IF STATUS = FINAL, THEN exit
+        if (game.status == "Final"): 
+            print "Game over... do nothing!"
+# ELSE IF GAME In Progress or WarmingUp... fire off monitoring game            
+        elif (game.status in ["In Progress","WarmingUp"]): 
+            print "Monitor game that is in progress or about to start!"
+# ELSE CREATE NEW CRONTAB ENTRY
         else:
+            gamemin = int(game.date[13:15])
             gamehour = int(game.date[11:12])
             if (game.date[16:18] == "PM"):
                 gamehour = gamehour + 12
-            gamemin = int(game.date[13:15])
-            print "Schedule game monitor for ", gamehour, "#",gamemin,"# from #", game.date,"#", game.date[16:18]
-            job = cron.new(command='~/Dev/MLBELL/mlbell_monitor.py -tPHI')
+            print "Schedule game monitor for ", game.date, " -or- ", gamehour, "#", gamemin,"#" 
+            job = cron.new(command='/Dev/MLBELL/mlbell_monitor.py -tPHI')
             job.minute.on(gamemin)
             job.hour.on(gamehour)
             job.enable
-
-#            CRONTMP.write("{0} {1} * * *  ~/Dev/MLBELL/mlbell_monitor.py -tPHI\n".format(gamemin, gamehour))
-#    CRONTMP.close()
-cron.write( 'crontabtmp.txt' )
+            cron.write()

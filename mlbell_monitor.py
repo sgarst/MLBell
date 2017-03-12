@@ -2,8 +2,8 @@
 # mlb_monitor.py - application to monitor a current game.
 
 import sys, getopt, time, datetime
-#import pigpio
-#from bell import bell
+import pigpio
+from bell import bell
 import requests
 import xml.etree.cElementTree as ET
 
@@ -48,7 +48,7 @@ def main(argv):
 
 def parse_game(url, team): #Parse miniscoreboard.xml
     try:
-        req = requests.get(url, timeout=10)
+        req = requests.get(url, timeout=20)
     except requests.exceptions.RequestException as e:
         print 'parse_game request error: ', e
     else:
@@ -75,7 +75,7 @@ def parse_game(url, team): #Parse miniscoreboard.xml
 
 def update_game(g): #update game in progress
     try:
-        req = requests.get(g.gameuri, timeout=10)
+        req = requests.get(g.gameuri, timeout=20)
     except requests.exceptions.RequestException as e:  
         print 'update_game requests error', e
         sys.exit(1)
@@ -98,7 +98,7 @@ def get_game(team, datestr = time.strftime("year_%Y/month_%m/day_%d/") ):
     url = "http://gd2.mlb.com/components/game/mlb/" + datestr + "epg.xml"
     games = []
     try:
-        req = requests.get(url, timeout=10)
+        req = requests.get(url, timeout=20)
     except requests.exceptions.RequestException as e:
         print 'get_game request error: ', e
     else:

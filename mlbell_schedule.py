@@ -41,38 +41,14 @@ def main(argv):
           # if re.match("^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$", datestr):
    return team, datestr
 
-def parse_game(url, team): #Parse miniscoreboard.xml
-    try:
-        req = requests.get(url, timeout=10)
-    except req.RequestException as e:
-        print 'parse_game request error: ', e
-    else:
-        root = ET.fromstring(req.text)
-
-    status = root.find('game_status[@status]').get('status')
-    date = root.get('id')[0:9]
-    runs = root.find('linescore/r')
-    homeruns = root.find('linescore/hr')
-    inning = root.find('game_status[@inning]').get('inning')
-    
-    # Create game object, return
-    g = Game(url, status, inning, root.get('home_name_abbrev'), root.get('away_name_abbrev'), date)
-    g.lastupdate = time.strftime("%H:%M:%S")
-    g.inning = inning
-    g.homeR = runs.get('home')
-    g.awayR = runs.get('away')
-    g.homeHR = homeruns.get('home')
-    g.awayHR = homeruns.get('away')
-    return(g)
-
 def get_game(team, datestr = time.strftime("year_%Y/month_%m/day_%d/") ):
 # Build a list of all games that "team" is playing "datestr" (or today, if datestr not passed in)
 
     url = "http://gd2.mlb.com/components/game/mlb/" + datestr + "epg.xml"
     games = []
     try:
-        req = requests.get(url, timeout=10)
-    except req.RequestException as e:
+        req = requests.get(url, timeout=20)
+    except requests.RequestException as e:
         print 'get_game request error: ', e
     else:
         root = ET.fromstring(req.text)
@@ -92,26 +68,31 @@ if __name__ == "__main__":
     datestr = 'year_{}/month_{}/day_{}/'.format(d[0:4], d[5:7],d[8:10])
     games = get_game(t,datestr)
 
-# SETUP crontab
+    # SETUP crontab
     cron = CronTab(user=True)    
     print '%d %s game(s) on %s'  %(len(games), t, d)  
     for game in games: 
         print '\t%s vs %s at %s (%s).'  %(game.home, game.away, game.date, game.status)
-# IF STATUS = FINAL, THEN exit
+        # IF STATUS = FINAL, THEN exit
         if (game.status == "Final"): 
             print "Game over... do nothing!"
-# ELSE IF GAME In Progress or WarmingUp... fire off monitoring game            
+        # ELSE IF GAME In Progress/WarmingUp... fire off monitoring 
         elif (game.status in ["In Progress","WarmingUp"]): 
             print "Monitor game that is in progress or about to start!"
-# ELSE CREATE NEW CRONTAB ENTRY
+        # ELSE CREATE NEW CRONTAB ENTRY
         else:
             gamemin = int(game.date[13:15])
             gamehour = int(game.date[11:12])
             if (game.date[16:18] == "PM"):
                 gamehour = gamehour + 12
-            print "Schedule game monitor for ", game.date, " -or- ", gamehour, "#", gamemin,"#" 
-            job = cron.new(command='/Dev/MLBELL/mlbell_monitor.py -tPHI')
+            gamemonth = int(game.date[5:7])
+            gameday = int(game.date[8:10])
+
+            print 'Adding crontab for %s vs %s, on %i / %i at %i : %i' %(game.home, game.away, gamemonth, gameday, gamehour, gamemin)
+            job = cron.new(command='home/mlb/MLBell/mlbell_monitor.py -tPHI')
             job.minute.on(gamemin)
             job.hour.on(gamehour)
+            job.day.on(gameday)
+            job.month.on(gamemonth)
             job.enable
             cron.write()

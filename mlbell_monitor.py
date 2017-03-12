@@ -109,9 +109,13 @@ def get_game(team, datestr = time.strftime("year_%Y/month_%m/day_%d/") ):
     #### END LOCAL FILE TEST ####
     
     #Now, parse epg.xml, looking for any games with "Team"
-    for g in (root.findall('game/[@home_name_abbrev="{}"]'.format(team)) + root.findall('game/[@away_name_abbrev="{}"]'.format(team))):
-        gdate = g.get('time_date') + ' ' + g.get('ampm') + ' (' + g.get('time_zone') + ')' 
-        game = Game(g.get('game_data_directory'), g.get('status'), g.get('inning'), g.get('home_name_abbrev'), g.get('away_name_abbrev'), gdate)
+    for g in (root.findall('game/[@home_name_abbrev="{}"]'.format(team)) + \
+            root.findall('game/[@away_name_abbrev="{}"]'.format(team))):
+        gdate = g.get('time_date') + ' ' + g.get('ampm') + \
+            ' (' + g.get('time_zone') + ')' 
+        game = Game(g.get('game_data_directory'), g.get('status'), \
+            g.get('inning'), g.get('home_name_abbrev'), \
+            g.get('away_name_abbrev'), gdate)
         games.append(game)
     return games
 
@@ -121,22 +125,32 @@ if __name__ == "__main__":
     games = get_game(t)
     print '%d %s game(s) today.'  %(len(games), t)  
     for game in games: 
-        print '\t%s vs %s at %s (%s).'  %(game.home, game.away, game.date, game.status)
+        print '\t%s vs %s at %s (%s).'  \
+            %(game.home, game.away, game.date, game.status)
     for game in games: 
-        if (game.status in ["In Progress","Warming Up"]):
+        if (game.status in ["In Progress","Warmup"]):
             url = "http://gd2.mlb.com" + game.gameuri + "/miniscoreboard.xml"
             g = parse_game(url,t)
             print "Time [INNING]\t%s R (HR)\t%s R (HR)"%(g.home, g.away)
-            print "%s [%s]\t    %s (%s)\t    %s (%s)"%(g.lastupdate, g.inning, g.homeR, g.homeHR, g.awayR, g.awayHR)
+            print "%s [%s]\t    %s (%s)\t    %s (%s)"\
+                %(g.lastupdate, g.inning, g.homeR, g.homeHR, g.awayR, g.awayHR)
+            sys.stdout.flush()
             score = [g.homeR, g.homeHR, g.awayR, g.awayHR]
             while (g.status in ["In Progress","Warmup"]):
-                print "Score: ", score[0:4]
+#                print "Score: ", score[0:4]
+                sys.stdout.flush()
                 g = update_game(g)
                 if not(score == [g.homeR, g.homeHR, g.awayR, g.awayHR]):
                     # IF A HOMERUN, RING BELL!!!
-                    if ((not(g.homeHR == score[1]) and (t == g.home)) or (not(g.awayHR == score[3]) and (t == g.away))):
-#                        bell()
-                        print "\tBELL BELL BELL\n"
+                    if ((not(g.homeHR == score[1]) and (t == g.home)) \
+                        or (not(g.awayHR == score[3]) and (t == g.away))):
+                        bell()
+#                        print "\tBELL BELL BELL\n"
+                        print "%s [%s]\t    %s (%s)\t    %s (%s)"\
+                            %(g.lastupdate, g.inning, g.homeR, \
+                            g.homeHR, g.awayR, g.awayHR)
+                        sys.stdout.flush()
             	score = [g.homeR, g.homeHR, g.awayR, g.awayHR]
                 time.sleep(15)
+            #Should be end of game... or maybe delay?
             print "Status: %s" % (g.status)

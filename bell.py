@@ -20,7 +20,7 @@ def blinkLight():
 
 def playAudio():
     pygame.mixer.init()
-    pygame.mixer.music.load("/home/mlb/basebell/client/WAV/bell_1_5s.wav")
+    pygame.mixer.music.load("/home/mlb/MLBell/WAV/bell_1_5s.wav")
     pygame.mixer.music.set_volume(0.9)
     pygame.mixer.music.play()
     while pygame.mixer.music.get_busy() == True:

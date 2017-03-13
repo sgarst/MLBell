@@ -137,19 +137,21 @@ if __name__ == "__main__":
             sys.stdout.flush()
             score = [g.homeR, g.homeHR, g.awayR, g.awayHR]
             while (g.status in ["In Progress","Warmup"]):
-#                print "Score: ", score[0:4]
-                sys.stdout.flush()
                 g = update_game(g)
                 if not(score == [g.homeR, g.homeHR, g.awayR, g.awayHR]):
-                    # IF A HOMERUN, RING BELL!!!
-                    if ((not(g.homeHR == score[1]) and (t == g.home)) \
-                        or (not(g.awayHR == score[3]) and (t == g.away))):
-                        bell()
-#                        print "\tBELL BELL BELL\n"
-                        print "%s [%s]\t    %s (%s)\t    %s (%s)"\
+                    print "%s [%s]\t    %s (%s)\t    %s (%s)"\
                             %(g.lastupdate, g.inning, g.homeR, \
                             g.homeHR, g.awayR, g.awayHR)
-                        sys.stdout.flush()
+                    sys.stdout.flush()
+                    # RING BELL IF ANY RUNS SCORED BY ANY TEAM
+                    bell()
+
+#                   #  RING BELL IF TEAM HITS HOMERUN
+#                    if ((not(g.homeHR == score[1]) and (t == g.home)) \
+#                        or (not(g.awayHR == score[3]) and (t == g.away))):
+#                        bell()
+#                        print "\tBELL BELL BELL\n"
+                # Save old score, for comparision...
             	score = [g.homeR, g.homeHR, g.awayR, g.awayHR]
                 time.sleep(15)
             #Should be end of game... or maybe delay?

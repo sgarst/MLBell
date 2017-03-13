@@ -63,7 +63,7 @@ def get_game(team, datestr = time.strftime("year_%Y/month_%m/day_%d/") ):
 ### MAIN ###      
 if __name__ == "__main__": 
     t,d = main(sys.argv[1:])
-    print "Team: ", t, ", Date: ", d
+    print '%s : Starting mlbell_schedule with team %s on %s.' %(time.strftime("%D %H:%M:%S"),t, d)
     #convert date to proper format
     datestr = 'year_{}/month_{}/day_{}/'.format(d[0:4], d[5:7],d[8:10])
     games = get_game(t,datestr)
@@ -75,10 +75,10 @@ if __name__ == "__main__":
         print '\t%s vs %s at %s (%s).'  %(game.home, game.away, game.date, game.status)
         # IF STATUS = FINAL, THEN exit
         if (game.status == "Final"): 
-            print "Game over... do nothing!"
+            print '%s : Game over, exiting....' %(time.strftime("%D %H:%M:%S"))
         # ELSE IF GAME In Progress/WarmingUp... fire off monitoring 
         elif (game.status in ["In Progress","WarmingUp"]): 
-            print "Monitor game that is in progress or about to start!"
+            print '%s : Game in progress!?!?!' %(time.strftime("%D %H:%M:%S"))
         # ELSE CREATE NEW CRONTAB ENTRY
         else:
             gamemin = int(game.date[13:15])
@@ -88,8 +88,10 @@ if __name__ == "__main__":
             gamemonth = int(game.date[5:7])
             gameday = int(game.date[8:10])
 
-            print 'Adding crontab for %s vs %s, on %i / %i at %i : %i' %(game.home, game.away, gamemonth, gameday, gamehour, gamemin)
-            job = cron.new(command='home/mlb/MLBell/mlbell_monitor.py -tPHI')
+            print '%s : Adding crontab for %s vs %s, on %i / %i at %i : %i' \
+             %(time.strftime("%D %H:%M:%S"), game.home, game.away, gamemonth, \
+             gameday, gamehour, gamemin)
+            job = cron.new(command='/home/mlb/MLBell/cron_monitor.sh')
             job.minute.on(gamemin)
             job.hour.on(gamehour)
             job.day.on(gameday)

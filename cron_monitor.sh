@@ -7,7 +7,7 @@ FLAGFILE=/tmp/cron_monitor.flg
 
 cd /home/mlb/MLBell
 touch $FLAGFILE
-echo "`date +%H:%M:%S` : Starting cron_monitor.sh" >> $LOGFILE
+echo "`date +%H:%M:%S` : Starting cron_monitor.sh for " $TEAM >> $LOGFILE
 
 # while flag is set, start monitor...
 # run monitor.py -t PHI... 

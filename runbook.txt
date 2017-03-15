@@ -1,4 +1,26 @@
 RUNBOOK MLBell 2/2/17 SG
+
+First, log into mlbell and verify pigpiod is running:
+$ ps -e | grep pigpiod
+
+As user mlb, cd /home/mlb/MLBell
+Check crontab to see if any jobs running:
+crontab -l
+
+To set up a Phillies game to be monitored today:
+./mlbell_schedule.py -t PHI
+
+Output logged to monitor.log
+Verify CRONTAB entry set for any PHI games today:
+crontab -l
+
+To watch as game is monitored:
+tail -f ./monitor.log
+
+
+== DEPRECIATED ==
+All code now run locally on the RaspberryPi... no server component.
+
 To run server component:
 - Log into samgarst.com
 - cd samgarst.com/mlbell

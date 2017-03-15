@@ -1,17 +1,17 @@
 MLBell Design
-Server: Ruby
-- Cron to pull down, parse and save upcoming game data (time, date, url)
-- Incrementally poll game data (check hourly until < 1 hour, then....)
-- When game on, save stats
-- Respond to polls from MLBell, with game stats or time_till_games
-- DBASE:
--- store game (gamestring, date, time, status, hometeam, awayteam, URL)
--- store game_score (gamestring, date, time, status, homescore, awayscore) 
+This is a raspberrypi hack project, that rings a liberty bell whenever a Phillies player hits a homerun. It hits a <garble> </garble> API to monitor games. Written mostly in Python, with some shell scripting, CRONTAB and other bits of glue.
 
-MLBell: Arduino
-- Poll Server to get next three games
-- Incrementally poll game data from server (check hourly until < 1 hour...)
-- When game on, poll for score
-- DBASE:
--- store upcoming games (gamestring, date, time, status)
--- store gamescore (gamestring, date, time, status, homescore, awayscore, homehomeruns, awayhomeruns)
+mlbell_schedule.py:
+- Take team, date parameters to determine if there is a game today for team.
+- If there is a game, it creates a CRONTAB entry to monitor the game.
+
+cron_monitor.sh:
+- Shell script sets a flag in the /tmp directory, then calls mlbell_monitor.py to monitor the game. cron_monitor.sh will restart mlbell_monitor.py until it exits cleanly (and removes flag).
+
+mlbell_monitor.py:
+- Monitors a game, by pulling down the score every 15 seconds.
+- If scores have changed, then it looks to see if the team being monitored hit a home run... if so it:
+--- plays a WAV audio file of a ringing bell
+--- fires off a servo to move the bell back and forth
+--- lights an LED light to light up the bell.
+

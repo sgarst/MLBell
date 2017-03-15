@@ -63,16 +63,17 @@ def get_game(team, datestr = time.strftime("year_%Y/month_%m/day_%d/") ):
 ### MAIN ###      
 if __name__ == "__main__": 
     t,d = main(sys.argv[1:])
-    print '%s : Starting mlbell_schedule with team %s on %s.' %(time.strftime("%D %H:%M:%S"),t, d)
+    print '%s : Starting mlbell_schedule with team %s on %s.' \
+        %(time.strftime("%D %H:%M:%S"),t, d)
     #convert date to proper format
     datestr = 'year_{}/month_{}/day_{}/'.format(d[0:4], d[5:7],d[8:10])
     games = get_game(t,datestr)
 
     # SETUP crontab
     cron = CronTab(user=True)    
-    print '%d %s game(s) on %s'  %(len(games), t, d)  
+#    print '%d %s game(s) on %s'  %(len(games), t, d)  
     for game in games: 
-        print '\t%s vs %s at %s (%s).'  %(game.home, game.away, game.date, game.status)
+#        print '\t%s vs %s at %s (%s).'  %(game.home, game.away, game.date, game.status)
         # IF STATUS = FINAL, THEN exit
         if (game.status == "Final"): 
             print '%s : Game over, exiting....' %(time.strftime("%D %H:%M:%S"))
@@ -91,7 +92,9 @@ if __name__ == "__main__":
             print '%s : Adding crontab for %s vs %s, on %i / %i at %i : %i' \
              %(time.strftime("%D %H:%M:%S"), game.home, game.away, gamemonth, \
              gameday, gamehour, gamemin)
-            job = cron.new(command='/home/mlb/MLBell/cron_monitor.sh')
+            cmd = "/home/mlb/MLBell/cron_monitor.sh -t" + t \
+                + " >> /home/mlb/MLBell/monitor.log 2>&1"
+            job = cron.new(command=cmd)
             job.minute.on(gamemin)
             job.hour.on(gamehour)
             job.day.on(gameday)

@@ -1,7 +1,7 @@
 #!/bin/bash
 # cron_monitor.sh - Bash script to run and sustain MLBell monitor.py program (that monitors a specific MLB game). This script is intended to be run from a CRONTAB job.
 
-TEAM=PHI
+TEAM=COL
 LOGFILE=monitor.log
 FLAGFILE=/tmp/cron_monitor.flg
 

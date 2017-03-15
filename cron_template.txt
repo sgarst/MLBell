@@ -1,4 +1,0 @@
-#CRONTAB
-#Min Hour DayofMonth Month DayofWeek
-#2 * * * *  cd ~ && touch test.txt 
-

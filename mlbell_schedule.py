@@ -89,7 +89,7 @@ if __name__ == "__main__":
             gamemonth = int(game.date[5:7])
             gameday = int(game.date[8:10])
 
-            print '%s : Adding crontab for %s vs %s, on %i / %i at %i : %i' \
+            print '%s : Adding crontab for %s vs %s, on %i/%i at %i:%i' \
              %(time.strftime("%D %H:%M:%S"), game.home, game.away, gamemonth, \
              gameday, gamehour, gamemin)
             cmd = "/home/mlb/MLBell/cron_monitor.sh -t" + t \

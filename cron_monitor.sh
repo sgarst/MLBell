@@ -19,6 +19,8 @@ done
 cd $DIR
 touch $FLAGFILE
 echo "`date +%H:%M:%S` : Starting cron_monitor.sh for " $TEAM >> $LOGFILE
+# Play Ball! sound effect...
+python play_start.py
 
 # While flag is set, start monitor...
 while [ -e $FLAGFILE ]
@@ -28,6 +30,8 @@ do
 	if [ $? -eq 0 ]; then #Exiting monitoring cleanly... 
 		echo "`date +%H:%M:%S` : Ending cron_monitor.sh" >> $LOGFILE
 		rm $FLAGFILE
+        # Play end of game sound effect...
+        python play_end.py
 		exit 0
 	fi
 done

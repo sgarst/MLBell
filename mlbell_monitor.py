@@ -4,7 +4,6 @@
 import sys, getopt, time, datetime
 import pigpio
 from bell import bell
-from playsound import playsound
 import requests
 import xml.etree.cElementTree as ET
 
@@ -156,6 +155,4 @@ if __name__ == "__main__":
             	score = [g.homeR, g.homeHR, g.awayR, g.awayHR]
                 time.sleep(15)
             #Should be end of game... or maybe delay?
-            #Play end of game sound...
-            playsound()
             print "Status: %s" % (g.status)

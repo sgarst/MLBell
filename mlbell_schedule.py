@@ -94,7 +94,10 @@ if __name__ == "__main__":
              gameday, gamehour, gamemin)
             cmd = "/home/mlb/MLBell/cron_monitor.sh -t" + t \
                 + " >> /home/mlb/MLBell/monitor.log 2>&1"
-            job = cron.new(command=cmd)
+            # Clean up comment to show 'real' time/date
+            cmt = "%s vs %s, %i/%i %i:%i" %(game.home, game.away, gamemonth, \
+             gameday, gamehour, gamemin)
+            job = cron.new(command=cmd, comment=cmt)
             job.minute.on(gamemin)
             job.hour.on(gamehour)
             job.day.on(gameday)

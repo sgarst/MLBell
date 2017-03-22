@@ -128,7 +128,7 @@ if __name__ == "__main__":
         print '\t%s vs %s at %s (%s).'  \
             %(game.home, game.away, game.date, game.status)
     for game in games: 
-        if (game.status in ["In Progress","Warmup"]):
+        if (game.status in ["In Progress","Warmup","Pre-Game"]):
             url = "http://gd2.mlb.com" + game.gameuri + "/miniscoreboard.xml"
             g = parse_game(url,t)
             print "Time [INNING]\t%s R (HR)\t%s R (HR)"%(g.home, g.away)
@@ -136,7 +136,7 @@ if __name__ == "__main__":
                 %(g.lastupdate, g.inning, g.homeR, g.homeHR, g.awayR, g.awayHR)
             sys.stdout.flush()
             score = [g.homeR, g.homeHR, g.awayR, g.awayHR]
-            while (g.status in ["In Progress","Warmup"]):
+            while (g.status in ["In Progress","Warmup","Pre-Game"]):
                 g = update_game(g)
                 if not(score == [g.homeR, g.homeHR, g.awayR, g.awayHR]):
                     print "%s [%s]\t    %s (%s)\t    %s (%s)"\

@@ -1,3 +1,15 @@
+TODO
+- mlbell_schedule should remove old crontab entries.
+- DELAYS???
+- mlbell_monitor to monitor >1 game; print one line with teams, score.
+- mlbell_monitor to monitor > game; cronflag with PID?
+- Logging tunable (info, debug)
+- Crontab email, or daily status email?
+- Configuration (team, ring on homerun/run/scores, directory, poll period)
+- Wireless configuration stuff
+- Build M2, M3 with volume
+
+
 Let specific user run aplay to play WAV files:
 sudo gpasswd -a [username] audio
 

@@ -24,27 +24,28 @@ class Game:
 def main(argv):
    team = 'PHI'
    datestr=datetime.date.today().strftime('%Y-%m-%d')
-   gameuri = ''
+   monitor = 'HR'
    try:
-      opts, args = getopt.getopt(argv,"ht:g:d:",["team=","gamepath=","date="])
+      opts, args = getopt.getopt(sys.argv[1:],"ht:g:d:m:",["team=","gamepath=","date=","monitor="])
    except getopt.GetoptError:
-      print 'mlbell_monitor.py -t <team> -g <gamepath> -d <date>'
+      print 'mlbell_monitor.py -t <team> -d <YYYY-MM-DD> -m <S/R/HR>'
       sys.exit(2)
    for opt, arg in opts:
       if opt in ('-h','--help'):
-         print 'mlbell_monitor.py -t <team> -g <gamepath> -d <date>'
+         print 'mlbell_monitor.py -t <team> -d <YYYY-MM-DD> -m <S/R/HR>'
          sys.exit()
       elif opt in ("-t", "--team"):
          team = arg.upper()
-      elif opt in ("-g", "--gamepath"):
-         gameuri = "http://gd2.mlb.com/components/game/mlb/" + arg   
+      elif opt in ("-m", "--monitor"):
+          if arg.upper() in ("S", "R", "HR"):
+              monitor = arg.upper()
       elif opt in ("-d", "--date"):
           datestr = arg
           # Validate date string?
           #REGEX for date format YYYY-MM-DD: ^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$
           # if re.match("^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$", datestr): ....
-          
-   return team, gameuri
+
+   return team, datestr, monitor
 
 def parse_game(url, team): #Parse miniscoreboard.xml
     try:
@@ -121,7 +122,7 @@ def get_game(team, datestr = time.strftime("year_%Y/month_%m/day_%d/") ):
 
 ### MAIN ###      
 if __name__ == "__main__": 
-    t,g = main(sys.argv[1:])
+    t,d,m = main(sys.argv[1:])
     games = get_game(t)
     print '%d %s game(s) today.'  %(len(games), t)  
     for game in games: 
@@ -139,18 +140,24 @@ if __name__ == "__main__":
             while (g.status in ["In Progress","Warmup","Pre-Game"]):
                 g = update_game(g)
                 if not(score == [g.homeR, g.homeHR, g.awayR, g.awayHR]):
+                    # Okay, the score has changed, so print it...
                     print "%s [%s]\t    %s (%s)\t    %s (%s)"\
                             %(g.lastupdate, g.inning, g.homeR, \
                             g.homeHR, g.awayR, g.awayHR)
                     sys.stdout.flush()
-                    # RING BELL IF ANY RUNS SCORED BY ANY TEAM
-                    bell()
-
-#                   #  RING BELL IF TEAM HITS HOMERUN
-#                    if ((not(g.homeHR == score[1]) and (t == g.home)) \
-#                        or (not(g.awayHR == score[3]) and (t == g.away))):
-#                        bell()
-#                        print "\tBELL BELL BELL\n"
+                    # If monitor (m) is S, then ring bell...
+                    # Else if m is HR, then check if team hit homerun,
+                    # Else if m is R, then check if team scored a run...
+                    if (m == "S"):
+                        bell()
+                    elif (m == "HR"):
+                        if (((g.home == t) and not(g.homeHR == score[1])) \
+                            or ((g.away == t) and not(g.awayHR == score[3]))):
+                            bell()
+                    elif (m == "R"):
+                        if (((g.home == t) and not(g.homeR == score[0])) \
+                            or ((g.away == t) and not(g.awayR == score[2]))):
+                            bell()
                 # Save old score, for comparision...
             	score = [g.homeR, g.homeHR, g.awayR, g.awayHR]
                 time.sleep(15)

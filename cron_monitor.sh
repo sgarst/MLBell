@@ -4,7 +4,8 @@
 TEAM=PHI
 DIR=/home/mlb/MLBell
 LOGFILE=monitor.log
-FLAGFILE=/tmp/cron_monitor.flg
+# $$ is the PID for this script
+FLAGFILE="/tmp/cron_monitor_$$.flg"
 
 # Process command line options...
 while getopts t:d: option

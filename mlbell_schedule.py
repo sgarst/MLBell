@@ -71,9 +71,17 @@ if __name__ == "__main__":
 
     # SETUP crontab
     cron = CronTab(user=True)    
-#    print '%d %s game(s) on %s'  %(len(games), t, d)  
+    # FIRST, clean out any crontabs from yesterday...
+    yesterday = datetime.date.today() - datetime.timedelta(days=1)
+    yesterdaycron = '%s %s' %(yesterday.day,yesterday.month)
+    for job in cron:
+        jobstr = str(job)
+        if (jobstr.find(yesterdaycron) > 0):
+            print '%s : Removing crontab %s' \
+             %(time.strftime("%D %H:%M:%S"),job.command)
+            cron.remove (job)
+    cron.write()
     for game in games: 
-#        print '\t%s vs %s at %s (%s).'  %(game.home, game.away, game.date, game.status)
         # IF STATUS = FINAL, THEN exit
         if (game.status == "Final"): 
             print '%s : Game over, exiting....' %(time.strftime("%D %H:%M:%S"))

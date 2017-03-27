@@ -124,14 +124,12 @@ def get_game(team, datestr = time.strftime("year_%Y/month_%m/day_%d/") ):
 if __name__ == "__main__": 
     t,d,m = main(sys.argv[1:])
     games = get_game(t)
-    print '%d %s game(s) today.'  %(len(games), t)  
-    for game in games: 
-        print '\t%s vs %s at %s (%s).'  \
-            %(game.home, game.away, game.date, game.status)
     for game in games: 
         if (game.status in ["In Progress","Warmup","Pre-Game"]):
             url = "http://gd2.mlb.com" + game.gameuri + "/miniscoreboard.xml"
             g = parse_game(url,t)
+            print '%s vs %s at %s (%s).'  \
+                %(game.home, game.away, game.date, game.status)
             print "Time [INNING]\t%s R (HR)\t%s R (HR)"%(g.home, g.away)
             print "%s [%s]\t    %s (%s)\t    %s (%s)"\
                 %(g.lastupdate, g.inning, g.homeR, g.homeHR, g.awayR, g.awayHR)

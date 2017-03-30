@@ -23,23 +23,29 @@ class Game:
 def main(argv):
 # Set defaults...
    team = 'PHI'
+   monitor = 'HR'
    datestr=datetime.date.today().strftime('%Y-%m-%d')
    try:
-      opts, args = getopt.getopt(argv,"ht:d:",["team=","date="])
+      opts, args = getopt.getopt(argv,"ht:m:d:",["team=", "monitor=", "date="])
    except getopt.GetoptError:
-      print 'mlbell_schedule.py -t <team> -d <date YYYY-MM-DD>'
+      print 'mlbell_schedule.py -t <team> -m <monitor HR/R/S> \
+        -d <date YYYY-MM-DD>'
       sys.exit(2)
    for opt, arg in opts:
       if opt in ('-h','--help'):
-         print 'mlbell_schedule.py -t <team> -d <date YYYY-MM-DD>'
-         sys.exit()
+        print 'mlbell_schedule.py -t <team> -m <monitor HR/R/S> \
+            -d <date YYYY-MM-DD>'
+        sys.exit()
       elif opt in ("-t", "--team"):
          team = arg.upper()
+      elif opt in ("-m", "--monitor"):
+         if arg.upper() in ("S", "R", "HR"):
+            monitor = arg.upper()
       elif opt in ("-d", "--date"):
           datestr = arg
           # REGEX for date format YYYY-MM-DD: ^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$
           # if re.match("^(20)\d\d[-](0[1-9]|1[012])[-](0[1-9]|[12][0-9]|3[01])$", datestr):
-   return team, datestr
+   return team, monitor, datestr
 
 def get_game(team, datestr = time.strftime("year_%Y/month_%m/day_%d/") ):
 # Build a list of all games that "team" is playing "datestr" (or today, if datestr not passed in)
@@ -62,9 +68,9 @@ def get_game(team, datestr = time.strftime("year_%Y/month_%m/day_%d/") ):
 
 ### MAIN ###      
 if __name__ == "__main__": 
-    t,d = main(sys.argv[1:])
-    print '%s : Starting mlbell_schedule with team %s on %s.' \
-        %(time.strftime("%D %H:%M:%S"),t, d)
+    t,m,d = main(sys.argv[1:])
+    print '%s : Starting mlbell_schedule with team %s on %s (Monitoring: %s).' \
+        %(time.strftime("%D %H:%M:%S"), t, d, m)
     #convert date to proper format
     datestr = 'year_{}/month_{}/day_{}/'.format(d[0:4], d[5:7],d[8:10])
     games = get_game(t,datestr)
@@ -81,13 +87,17 @@ if __name__ == "__main__":
              %(time.strftime("%D %H:%M:%S"),job.command)
             cron.remove (job)
     cron.write()
+    # Now, write any games to monitor today...
     for game in games: 
         # IF STATUS = FINAL, THEN exit
         if (game.status == "Final"): 
-            print '%s : Game over, exiting....' %(time.strftime("%D %H:%M:%S"))
+            print '%s : Game over (%s vs %s at %s)' \
+                %(time.strftime("%D %H:%M:%S"), game.home, game.away, game.date)
         # ELSE IF GAME In Progress/WarmingUp... fire off monitoring 
         elif (game.status in ["In Progress","WarmingUp"]): 
-            print '%s : Game in progress!?!?!' %(time.strftime("%D %H:%M:%S"))
+            print '%s : Game in progress (%s vs %s at %s)' \
+                 %(time.strftime("%D %H:%M:%S"), game.home, \
+                game.away, game.date)
         # ELSE CREATE NEW CRONTAB ENTRY
         else:
             gamemin = int(game.date[13:15])
@@ -101,7 +111,7 @@ if __name__ == "__main__":
              %(time.strftime("%D %H:%M:%S"), game.home, game.away, gamemonth, \
              gameday, gamehour, gamemin)
             cmd = "/home/mlb/MLBell/cron_monitor.sh -t" + t \
-                + " >> /home/mlb/MLBell/monitor.log 2>&1"
+                + " -m" + m + " >> /home/mlb/MLBell/monitor.log 2>&1"
             # Clean up comment to show 'real' time/date
             cmt = "%s vs %s, %i/%i %i:%i" %(game.home, game.away, gamemonth, \
              gameday, gamehour, gamemin)

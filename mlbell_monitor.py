@@ -128,20 +128,23 @@ if __name__ == "__main__":
         if (game.status in ["In Progress","Warmup","Pre-Game"]):
             url = "http://gd2.mlb.com" + game.gameuri + "/miniscoreboard.xml"
             g = parse_game(url,t)
-            print '%s vs %s at %s (%s).'  \
-                %(game.home, game.away, game.date, game.status)
-            print "Time [INNING]\t%s R (HR)\t%s R (HR)"%(g.home, g.away)
-            print "%s [%s]\t    %s (%s)\t    %s (%s)"\
-                %(g.lastupdate, g.inning, g.homeR, g.homeHR, g.awayR, g.awayHR)
+#            print '%s vs %s at %s (%s).'  \
+#                %(game.home, game.away, game.date, game.status)
+#            print "Time [INNING]\t%s R (HR)\t%s R (HR)"%(g.home, g.away)
+#            print "%s [%s]\t    %s (%s)\t    %s (%s)"\
+#                %(g.lastupdate, g.inning, g.homeR, g.homeHR, g.awayR, g.awayHR)
+            print "%s [%s]\t%s %s (%s)\t%s %s (%s)"\
+                %(g.lastupdate, g.inning, g.home, g.homeR, \
+                g.homeHR, g.away, g.awayR, g.awayHR)
             sys.stdout.flush()
             score = [g.homeR, g.homeHR, g.awayR, g.awayHR]
             while (g.status in ["In Progress","Warmup","Pre-Game"]):
                 g = update_game(g)
                 if not(score == [g.homeR, g.homeHR, g.awayR, g.awayHR]):
                     # Okay, the score has changed, so print it...
-                    print "%s [%s]\t    %s (%s)\t    %s (%s)"\
-                            %(g.lastupdate, g.inning, g.homeR, \
-                            g.homeHR, g.awayR, g.awayHR)
+                    print "%s [%s]\t%s %s (%s)\t%s %s (%s)"\
+                        %(g.lastupdate, g.inning, g.home, g.homeR, \
+                        g.homeHR, g.away, g.awayR, g.awayHR)
                     sys.stdout.flush()
                     # If monitor (m) is S, then ring bell...
                     # Else if m is HR, then check if team hit homerun,
@@ -156,8 +159,10 @@ if __name__ == "__main__":
                         if (((g.home == t) and not(g.homeR == score[0])) \
                             or ((g.away == t) and not(g.awayR == score[2]))):
                             bell()
-                # Save old score, for comparision...
-            	score = [g.homeR, g.homeHR, g.awayR, g.awayHR]
+                    # Save old score, for comparision...
+                    score = [g.homeR, g.homeHR, g.awayR, g.awayHR]
                 time.sleep(15)
             #Should be end of game... or maybe delay?
-            print "Status: %s" % (g.status)
+            print "%s [%s]\t%s %s (%s)\t%s %s (%s) %s"\
+                %(g.lastupdate, g.inning, g.home, g.homeR, \
+                g.homeHR, g.away, g.awayR, g.awayHR, g.status)

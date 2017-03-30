@@ -1,14 +1,10 @@
 TODO
-- mlbell_schedule should remove old crontab entries.
 - DELAYS???
-- mlbell_monitor to monitor >1 game; print one line with teams, score.
-- mlbell_monitor to monitor > game; cronflag with PID?
 - Logging tunable (info, debug)
 - Crontab email, or daily status email?
-- Configuration (team, ring on homerun/run/scores, directory, poll period)
+- Configuration (team, directory, poll period)
 - Wireless configuration stuff
 - Build M2, M3 with volume
-
 
 Let specific user run aplay to play WAV files:
 sudo gpasswd -a [username] audio
@@ -41,18 +37,75 @@ ADDED:
 REMOVED:
    some lines about auto connecting... see interfaces.orig
 
-TO copy files around:
-Copy info.txt FROM rasberry to local
+Secure copy files b/w servers:
 scp mlb@10.0.0.13:/home/mlb/info.txt .
 
-Copy info.txt FROM local to rasbery
-scp info.txt mlb@10.0.0.13:/home/mlb/info.txt
+BUILD
+WIRELESS AND SSH CONFIG before even booting:
+http://raspberrypi.stackexchange.com/questions/10251/prepare-sd-card-for-wifi-on-headless-pi
 
-Copy directory "foo" from local to remote "bar":
-scp -r foo mlb@10.0.0.13:/home/mlb/bar
+BUILD:
+- Download Raspbian Lite (https://www.raspberrypi.org/downloads/raspbian/), unzip to get .img file
+- Insert SD card (format FAT32)
+$ diskutil list (get disk name "disk3", NOT disk3s1)
+$ diskutil unmountDisk /dev/disk#
+(( to format )) $ sudo newfs_msdos -F32 /dev/disk2
+$ sudo dd bs=1m if=image.img of=/dev/rdisk# OR of=/dev/disk#
+Now set up wireless and SSH:
+$ diskutil mountDisk /dev/disk<disk# from diskutil> 
+$ touch /Volume/boot/ssh
+$ vi /Volume/boot/wpa_supplicant.conf
+    network={
+        ssid="YOUR_SSID"
+        psk="YOUR_PASSWORD"
+        key_mgmt=WPA-PSK
+    }
 
-MAC Address: b8:27:eb:15:c5:a3 
+Boot up, use Fling to get IP address.
+ssh pi@<ip address> / password raspberry
+$ passwd (to change password)
+$ sudo adduser mlb
+$ sudo visudo (To enable mlb to sudo)
+$ sudo raspi-config
+-- change hostname
+-- change local to en_US.UTF-8
+-- reboot
+$ sudo apt-get update
+$ sudo apt-get dist-upgrade
+$ sudo apt-get clean (remove downloaded package files)
 
-start X Window session via SSH (much less tasking for rasberry):
-ssh -X mlb@192.168.1.47
-xeyes (to test)
+Set up SSH
+ON MAC: $cat ~/.ssh/id_rsa.pub | ssh mlb@10.0.0.27 'cat >> .ssh/authorized_keys'
+
+SOFTWARE
+Install PIP
+$ sudo apt-get install python-pip
+$ pip install Requests
+$ sudo pip install python-crontab
+$ sudo apt-get python-pigpio (or sudo apt-get pigpio?)
+
+Let specific user run aplay to play WAV files:
+sudo gpasswd -a [username] audio
+
+Set up VI to respect arrow keys
+vi .vimrc
+set nocompatible
+
+TO LIST PACKAGES:
+    dpkg -L packagename
+    apt --installed list
+    
+python-crontab : https://pypi.python.org/pypi/python-crontab
+Python library to manage crontab (add, remove, edit, etc).
+
+requests: http://docs.python-requests.org/en/master/
+Python library to handle http.
+
+Other python libraries: pygame (to play sounds), xml.tree (to parse XML).
+
+PIGPIO : http://abyz.co.uk/rpi/pigpio/
+Library to drive servo using GPIO. 
+Must edit /etc/rc.local to start deamon on reboot
+
+
+

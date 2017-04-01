@@ -101,21 +101,9 @@ if __name__ == "__main__":
                 game.away, game.date.strftime('%I:%M %p'))
         # ELSE CREATE NEW CRONTAB ENTRY
         else:
-<<<<<<< HEAD
             print '%s : Adding crontab for %s vs %s, on %s' \
-             %(time.strftime("%D %H:%M:%S"), game.home, game.away, game.date.strftime('%m/%d/%Y %I:%M %p') )
-=======
-            gamemin = int(game.date[13:16])
-            gamehour = int(game.date[11:12])
-            if (game.date[16:18] == "PM"):
-                gamehour = gamehour + 12
-            gamemonth = int(game.date[5:7])
-            gameday = int(game.date[8:10])
-
-            print '%s : Adding crontab for %s vs %s, on %i/%i at %i:%i' \
-             %(time.strftime("%D %H:%M:%S"), game.home, game.away, gamemonth, \
-             gameday, gamehour, gamemin)
->>>>>>> 08cd3ae0ca70df4dd73007abdd8c5e51aad4e0a6
+             %(time.strftime("%D %H:%M:%S"), game.home, game.away, \
+	     game.date.strftime('%m/%d/%Y %I:%M %p') )
             cmd = "/home/mlb/MLBell/cron_monitor.sh -t" + t \
                 + " -m" + m + " >> /home/mlb/MLBell/monitor.log 2>&1"
             cmt = "%s vs %s, %s" %(game.home, game.away, game.date.strftime('%I:%M %p') )

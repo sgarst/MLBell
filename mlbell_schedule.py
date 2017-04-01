@@ -100,7 +100,7 @@ if __name__ == "__main__":
                 game.away, game.date)
         # ELSE CREATE NEW CRONTAB ENTRY
         else:
-            gamemin = int(game.date[13:15])
+            gamemin = int(game.date[13:16])
             gamehour = int(game.date[11:12])
             if (game.date[16:18] == "PM"):
                 gamehour = gamehour + 12

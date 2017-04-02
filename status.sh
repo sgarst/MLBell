@@ -8,6 +8,4 @@ echo "PS:"
 ps -e | grep monitor
 echo "Flag files:"
 ls /tmp/cron*
-echo "Monitor.log:"
-tail monitor.log
 

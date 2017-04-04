@@ -10,3 +10,11 @@
 *.tar
 *.zip
 *.log
+*.pdf
+*.jpg
+*.jpeg
+*.png
+*.svg
+images/
+
+

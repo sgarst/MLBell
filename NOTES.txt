@@ -55,11 +55,12 @@ Now set up wireless and SSH:
 $ diskutil mountDisk /dev/disk<disk# from diskutil> 
 $ touch /Volume/boot/ssh
 $ vi /Volume/boot/wpa_supplicant.conf
-    network={
-        ssid="YOUR_SSID"
-        psk="YOUR_PASSWORD"
-        key_mgmt=WPA-PSK
-    }
+==NOTE: Use tabs, not spaces...
+network={
+    ssid='Deauthorize2'
+    psk='1607stoddard'
+    key_mgmt=WPA-PSK
+}
 
 Boot up, use Fling to get IP address.
 ssh pi@<ip address> / password raspberry
@@ -68,28 +69,42 @@ $ sudo adduser mlb
 $ sudo visudo (To enable mlb to sudo)
 $ sudo raspi-config
 -- change hostname
--- change local to en_US.UTF-8
+-- change local to en_US.UTF-8 UTF-8 (Unselect UK or GB)
+-- force audio through 3mm jack (advanced)
+-- enable SSH (interfaces)
+-- expand filesystem
 -- reboot
 $ sudo apt-get update
 $ sudo apt-get dist-upgrade
 $ sudo apt-get clean (remove downloaded package files)
 
+Set up VI to respect arrow keys
+$ vi .vimrc
+set nocompatible
+
 Set up SSH
-ON MAC: $cat ~/.ssh/id_rsa.pub | ssh mlb@10.0.0.27 'cat >> .ssh/authorized_keys'
+ON MLBELL: $mkdir .shh (if needed)
+ON MAC: $cat ~/.ssh/id_rsa.pub | ssh mlb@IPADDRESS 'cat >> .ssh/authorized_keys'
 
 SOFTWARE
 Install PIP
 $ sudo apt-get install python-pip
 $ pip install Requests
 $ sudo pip install python-crontab
-$ sudo apt-get python-pigpio (or sudo apt-get pigpio?)
+$ sudo apt-get install python-pigpio (or sudo apt-get pigpio?)
 
 Let specific user run aplay to play WAV files:
 sudo gpasswd -a [username] audio
 
-Set up VI to respect arrow keys
-vi .vimrc
-set nocompatible
+To start pigpio on startup...
+$ sudo vi /etc/rc.local to start deamon on reboot
+sudo pigpiod -s 2 -b 200 -f
+
+Set up git/github
+$ sudo apt-get install git
+$ git config --global user.email "sgarst@gmail.com"
+$ git config --global user.name "sgarst"
+$ git clone https://github.com/sgarst/MLBell.git
 
 TO LIST PACKAGES:
     dpkg -L packagename
@@ -105,7 +120,6 @@ Other python libraries: pygame (to play sounds), xml.tree (to parse XML).
 
 PIGPIO : http://abyz.co.uk/rpi/pigpio/
 Library to drive servo using GPIO. 
-Must edit /etc/rc.local to start deamon on reboot
 
 
 

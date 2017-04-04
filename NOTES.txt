@@ -6,47 +6,9 @@ TODO
 - Wireless configuration stuff
 - Build M2, M3 with volume
 
-Let specific user run aplay to play WAV files:
-sudo gpasswd -a [username] audio
-
-Set up VI to respect arrow keys
-vi .vimrc
-set nocompatible
-
-Force pigpiod (daemon) to run on reboot, by adding to crontab:
-sudo crontab -e
-@reboot 	/usr/local/bin/pigpiod
-
-
-
-arp -a (to get a list of all IP addresses on network).
-ssh pi@[ipaddress] pswd: 2433p1n3
-ssh mlb@[ipaddress] pswd: mlbell
-
-ifconfig:
-sudo ifup wlan0
-
-To set up wirless follow this:
-http://www.raspberrypi.org/documentation/configuration/wireless/
-
-/etc/network/interfaces
-ADDED:
-   iface wlan0 inet dhcp
-   wpa-ssid <your network ssid here>
-   wpa-psk <your network password>
-REMOVED:
-   some lines about auto connecting... see interfaces.orig
-
-Secure copy files b/w servers:
-scp mlb@10.0.0.13:/home/mlb/info.txt .
-
-BUILD
-WIRELESS AND SSH CONFIG before even booting:
-http://raspberrypi.stackexchange.com/questions/10251/prepare-sd-card-for-wifi-on-headless-pi
-
 BUILD:
 - Download Raspbian Lite (https://www.raspberrypi.org/downloads/raspbian/), unzip to get .img file
-- Insert SD card (format FAT32)
+- Insert SD card
 $ diskutil list (get disk name "disk3", NOT disk3s1)
 $ diskutil unmountDisk /dev/disk#
 (( to format )) $ sudo newfs_msdos -F32 /dev/disk2
@@ -58,11 +20,11 @@ $ vi /Volume/boot/wpa_supplicant.conf
 ==NOTE: Use tabs, not spaces...
 network={
     ssid='Deauthorize2'
-    psk='1607stoddard'
+    psk='xxxx'
     key_mgmt=WPA-PSK
 }
 
-Boot up, use Fling to get IP address.
+Boot up, find/discover IP address (fing on iphone? arp -a? router?).
 ssh pi@<ip address> / password raspberry
 $ passwd (to change password)
 $ sudo adduser mlb
@@ -74,9 +36,13 @@ $ sudo raspi-config
 -- enable SSH (interfaces)
 -- expand filesystem
 -- reboot
-$ sudo apt-get update
-$ sudo apt-get dist-upgrade
-$ sudo apt-get clean (remove downloaded package files)
+
+Log in as mlbell
+Set up VI as default editor
+vi .profile
+EDITOR=vim
+VISUAL=$EDITOR
+export EDITOR VISUAL
 
 Set up VI to respect arrow keys
 $ vi .vimrc
@@ -86,8 +52,12 @@ Set up SSH
 ON MLBELL: $mkdir .shh (if needed)
 ON MAC: $cat ~/.ssh/id_rsa.pub | ssh mlb@IPADDRESS 'cat >> .ssh/authorized_keys'
 
-SOFTWARE
-Install PIP
+Now, update and install software:
+$ sudo apt-get update
+$ sudo apt-get dist-upgrade
+$ sudo apt-get clean (remove downloaded package files)
+
+Install software packages:
 $ sudo apt-get install python-pip
 $ pip install Requests
 $ sudo pip install python-crontab

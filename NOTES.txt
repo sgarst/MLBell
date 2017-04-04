@@ -96,9 +96,10 @@ $ sudo apt-get install python-pigpio (or sudo apt-get pigpio?)
 Let specific user run aplay to play WAV files:
 sudo gpasswd -a [username] audio
 
-To start pigpio on startup...
+To start pigpio on startup... PUT IN BEFORE "exit 0"
 $ sudo vi /etc/rc.local to start deamon on reboot
 sudo pigpiod -s 2 -b 200 -f
+== MAKE SURE THIS IS BEFORE "exit 0" at end of file
 
 Set up git/github
 $ sudo apt-get install git

@@ -6,47 +6,9 @@ TODO
 - Wireless configuration stuff
 - Build M2, M3 with volume
 
-Let specific user run aplay to play WAV files:
-sudo gpasswd -a [username] audio
-
-Set up VI to respect arrow keys
-vi .vimrc
-set nocompatible
-
-Force pigpiod (daemon) to run on reboot, by adding to crontab:
-sudo crontab -e
-@reboot 	/usr/local/bin/pigpiod
-
-
-
-arp -a (to get a list of all IP addresses on network).
-ssh pi@[ipaddress] pswd: 2433p1n3
-ssh mlb@[ipaddress] pswd: mlbell
-
-ifconfig:
-sudo ifup wlan0
-
-To set up wirless follow this:
-http://www.raspberrypi.org/documentation/configuration/wireless/
-
-/etc/network/interfaces
-ADDED:
-   iface wlan0 inet dhcp
-   wpa-ssid <your network ssid here>
-   wpa-psk <your network password>
-REMOVED:
-   some lines about auto connecting... see interfaces.orig
-
-Secure copy files b/w servers:
-scp mlb@10.0.0.13:/home/mlb/info.txt .
-
-BUILD
-WIRELESS AND SSH CONFIG before even booting:
-http://raspberrypi.stackexchange.com/questions/10251/prepare-sd-card-for-wifi-on-headless-pi
-
 BUILD:
 - Download Raspbian Lite (https://www.raspberrypi.org/downloads/raspbian/), unzip to get .img file
-- Insert SD card (format FAT32)
+- Insert SD card
 $ diskutil list (get disk name "disk3", NOT disk3s1)
 $ diskutil unmountDisk /dev/disk#
 (( to format )) $ sudo newfs_msdos -F32 /dev/disk2
@@ -55,41 +17,65 @@ Now set up wireless and SSH:
 $ diskutil mountDisk /dev/disk<disk# from diskutil> 
 $ touch /Volume/boot/ssh
 $ vi /Volume/boot/wpa_supplicant.conf
-    network={
-        ssid="YOUR_SSID"
-        psk="YOUR_PASSWORD"
-        key_mgmt=WPA-PSK
-    }
+==NOTE: Use tabs, not spaces...
+network={
+    ssid='Deauthorize2'
+    psk='xxxx'
+    key_mgmt=WPA-PSK
+}
 
-Boot up, use Fling to get IP address.
+Boot up, find/discover IP address (fing on iphone? arp -a? router?).
 ssh pi@<ip address> / password raspberry
 $ passwd (to change password)
 $ sudo adduser mlb
 $ sudo visudo (To enable mlb to sudo)
 $ sudo raspi-config
 -- change hostname
--- change local to en_US.UTF-8
+-- change local to en_US.UTF-8 UTF-8 (Unselect UK or GB)
+-- force audio through 3mm jack (advanced)
+-- enable SSH (interfaces)
+-- expand filesystem
 -- reboot
+
+Log in as mlbell
+Set up VI as default editor
+vi .profile
+EDITOR=vim
+VISUAL=$EDITOR
+export EDITOR VISUAL
+
+Set up VI to respect arrow keys
+$ vi .vimrc
+set nocompatible
+
+Set up SSH
+ON MLBELL: $mkdir .shh (if needed)
+ON MAC: $cat ~/.ssh/id_rsa.pub | ssh mlb@IPADDRESS 'cat >> .ssh/authorized_keys'
+
+Now, update and install software:
 $ sudo apt-get update
 $ sudo apt-get dist-upgrade
 $ sudo apt-get clean (remove downloaded package files)
 
-Set up SSH
-ON MAC: $cat ~/.ssh/id_rsa.pub | ssh mlb@10.0.0.27 'cat >> .ssh/authorized_keys'
-
-SOFTWARE
-Install PIP
+Install software packages:
 $ sudo apt-get install python-pip
 $ pip install Requests
 $ sudo pip install python-crontab
-$ sudo apt-get python-pigpio (or sudo apt-get pigpio?)
+$ sudo apt-get install python-pigpio (or sudo apt-get pigpio?)
 
 Let specific user run aplay to play WAV files:
 sudo gpasswd -a [username] audio
 
-Set up VI to respect arrow keys
-vi .vimrc
-set nocompatible
+To start pigpio on startup... PUT IN BEFORE "exit 0"
+$ sudo vi /etc/rc.local to start deamon on reboot
+sudo pigpiod -s 2 -b 200 -f
+== MAKE SURE THIS IS BEFORE "exit 0" at end of file
+
+Set up git/github
+$ sudo apt-get install git
+$ git config --global user.email "sgarst@gmail.com"
+$ git config --global user.name "sgarst"
+$ git clone https://github.com/sgarst/MLBell.git
 
 TO LIST PACKAGES:
     dpkg -L packagename
@@ -105,7 +91,6 @@ Other python libraries: pygame (to play sounds), xml.tree (to parse XML).
 
 PIGPIO : http://abyz.co.uk/rpi/pigpio/
 Library to drive servo using GPIO. 
-Must edit /etc/rc.local to start deamon on reboot
 
 
 

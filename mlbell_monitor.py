@@ -125,7 +125,7 @@ if __name__ == "__main__":
     t,d,m = main(sys.argv[1:])
     games = get_game(t)
     for game in games: 
-        if (game.status in ["In Progress","Warmup","Pre-Game"]):
+        if (game.status in ["In Progress","Warmup","Pre-Game","Review"]):
             url = "http://gd2.mlb.com" + game.gameuri + "/miniscoreboard.xml"
             g = parse_game(url,t)
 #            print '%s vs %s at %s (%s).'  \

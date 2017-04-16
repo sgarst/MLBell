@@ -2,6 +2,9 @@
 # status.sh - script to dump status on mlbell...
 # SWGarst 4/5/2017
 
+clear
+echo  "MLBell status - $(date)"
+ 
 echo "Crontab:"
 crontab -l | sed '/^\s*$/d'
 
@@ -16,9 +19,11 @@ fi
 if test -n "$(find /tmp -name 'cron*' -print -quit)"
 then
     echo -e "\nCron flag files:"
-    ls -l /tmp/cron*
+    ls /tmp/cron*
 else
     echo "No cron flags found!"
 fi
 echo -e "\n"
+
+tail -5 ~/MLBell/monitor.log
 

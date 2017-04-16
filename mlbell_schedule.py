@@ -71,7 +71,7 @@ def get_game(team, gamedate):
 ### MAIN ###
 if __name__ == "__main__":
     t,d,m = main(sys.argv[1:])
-    print '%s : Starting mlbell_schedule with team %s on %s (Monitor: %s).' \
+    print '%s : mlbell_schedule: team %s on %s (Monitor: %s).' \
         %(time.strftime("%D %H:%M:%S"), t, d.strftime('%m/%d/%Y'), m)
     games = get_game(t,d)
     if not (games):

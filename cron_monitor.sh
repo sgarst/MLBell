@@ -1,5 +1,6 @@
 #!/bin/bash
-# cron_monitor.sh - Bash script to run and sustain MLBell monitor.py program (that monitors a specific MLB game). This script is intended to be run from a CRONTAB job.
+# cron_monitor.sh - Bash script to run and sustain MLBell monitor.py program (that monitors a specific MLB game). This script is intended to be run from a CRONTAB job. It sets a flag, and repeatedly calls mlbell_monitor.py until it exits cleanly, then clears the flag.
+
 # Set up defaults...
 TEAM=PHI
 DIR=/home/mlb/MLBell

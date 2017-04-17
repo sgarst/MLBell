@@ -25,5 +25,6 @@ else
 fi
 echo -e "\n"
 
+echo "Monitor.log file:"
 tail -5 ~/MLBell/monitor.log
 
